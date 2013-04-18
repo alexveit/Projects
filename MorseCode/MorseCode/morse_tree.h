@@ -7,14 +7,12 @@ class morse_tree
 {
 	struct Data
 	{
-	#define CODE_SIZE	5
-
 		char _letter;
-		char _code[CODE_SIZE];
+		std::string _code;
 
-		Data();
+		Data() : _letter(0), _code("") {}
 
-		Data(char l, char c[]);
+		Data(std::string d);
 
 		Data& operator=(const Data &d);
 	};
@@ -23,15 +21,17 @@ class morse_tree
 	{
 		Data _data;
 		Node *_left_dot, *_right_line;
-
+		Node() : _left_dot(nullptr), _right_line(nullptr) {}
 		Node(Data d, Node *left_dot, Node *right_line);
 	};
 
-	Node *_root;
+	Node _root;
 
-	void insert(const Data &d);
+	char get_char(Node *n, const int pos, const string code);
 
-	void insert(Node *n, const Data &d);
+	std::string get_code(Node *n, const char letter, bool *found);
+
+	void insert(Node *n, int pos, const Data &d);
 
 	void load_tree();
 

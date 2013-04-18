@@ -1,26 +1,19 @@
+#include <fstream>
+#include <sstream>
 #include "morse_tree.h"
 
 using namespace std;
 
-morse_tree::Data::Data()
+morse_tree::Data::Data(string d)
 {
-	_letter = 0;
-	for(int i = 0; i < CODE_SIZE; i++)
-		_code[i] = 0;
-}
-
-morse_tree::Data::Data(char l, char c[])
-{
-	_letter = l;
-	for(int i = 0; i < CODE_SIZE; i++)
-		_code[i] = c[i];
+	_letter = d[0];
+	_code = &d[1];
 }
 
 morse_tree::Data& morse_tree::Data::operator=(const Data &d)
 {
 	_letter = d._letter;
-	for(int i = 0; i < 4; i++)
-		_code[i] = d._code[i];
+	_code = d._code;
 	return *this;
 }
 
@@ -31,16 +24,62 @@ morse_tree::Node::Node(Data d, Node *left_dot, Node *right_line)
 	_right_line = right_line;
 }
 
-void morse_tree::insert(Node *n, const Data &d)
+void morse_tree::insert(Node *n, int pos, const Data &d)
 {
+	if(d._code[pos] == '.')
+	{
+		if(!n->_left_dot)
+			n->_left_dot = new Node(d,nullptr,nullptr);
+		else
+			insert(n->_left_dot,pos+1,d);
+	}
+	else
+	{
+		if(!n->_right_line)
+			n->_right_line = new Node(d,nullptr,nullptr);
+		else
+			insert(n->_right_line,pos+1,d);
+	}
 }
 
-void morse_tree::insert(const Data &d)
+char morse_tree::get_char(Node *n, const int pos, const string code)
 {
+	//todo
+	return 0;
+}
+
+string morse_tree::get_code(Node *n, const char letter, bool *found)
+{
+	if(n == nullptr)
+		return "";
+	if(n->_data._letter == letter)
+	{
+		*found = true;
+		return n->_data._code;
+	}
+
+	string temp = get_code(n->_left_dot,letter,found);
+	if(!*found)
+	{
+		temp = get_code(n->_right_line,letter,found);
+	}
+
+	return temp;
 }
 
 void morse_tree::load_tree()
 {
+	string line;
+	ifstream myfile ("morse-code.txt");
+	if (myfile.is_open())
+	{
+		while ( myfile.good() )
+		{
+			getline(myfile,line);
+			insert(&_root,0,Data(line));
+		}
+		myfile.close();
+	}
 
 }
 
@@ -51,10 +90,28 @@ morse_tree::morse_tree()
 
 string morse_tree::decode(string input)
 {
+	string code;
+	ostringstream oss;
+	istringstream iss(input);
+	
+	while ( iss.good() )
+	{
+		iss >> code;
+		oss << get_char(&_root,0,code);
+	}
 	return input;
 }
 
 string morse_tree::encode(string input)
 {
-	return input;
+	ostringstream oss;
+	bool f = false;
+	for(unsigned i = 0; i < input.size(); i++)
+	{
+		oss << get_code(&_root,input[i],&f);
+		if(f)
+			oss << " ";
+		f = false;
+	}
+	return oss.str();
 }
