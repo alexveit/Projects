@@ -45,10 +45,10 @@ int main(int argc, char* argv[])
 	switch(param)
 	{
 	case 1:
-		cout << mc.encode(argv[2]) << endl;
+		cout << mc.encode(argv[2]);
 		break;
 	case 2:
-		cout << mc.decode(argv[2]) << endl;
+		cout << mc.decode(argv[2]);
 		break;
 	}
 

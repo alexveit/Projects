@@ -7,10 +7,11 @@ class morse_tree
 {
 	struct Data
 	{
-		char _letter;
+		char _letter_s;
+		char _letter_b;
 		std::string _code;
 
-		Data() : _letter(0), _code("") {}
+		Data() : _letter_s(0), _letter_b(0), _code("") {}
 
 		Data(std::string d);
 
@@ -27,7 +28,7 @@ class morse_tree
 
 	Node _root;
 
-	char get_char(Node *n, const int pos, const string code);
+	char get_char(Node *n, const int pos, const std::string code);
 
 	std::string get_code(Node *n, const char letter, bool *found);
 

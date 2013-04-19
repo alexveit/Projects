@@ -6,13 +6,15 @@ using namespace std;
 
 morse_tree::Data::Data(string d)
 {
-	_letter = d[0];
-	_code = &d[1];
+	_letter_s = d[0];
+	_letter_b = d[1];
+	_code = &d[2];
 }
 
 morse_tree::Data& morse_tree::Data::operator=(const Data &d)
 {
-	_letter = d._letter;
+	_letter_s = d._letter_s;
+	_letter_b = d._letter_b;
 	_code = d._code;
 	return *this;
 }
@@ -44,15 +46,23 @@ void morse_tree::insert(Node *n, int pos, const Data &d)
 
 char morse_tree::get_char(Node *n, const int pos, const string code)
 {
-	//todo
-	return 0;
+	if(n == nullptr)
+		return '0';
+
+	if(n->_data._code.compare(code) == 0)
+		return n->_data._letter_s;
+
+	if(code[pos] == '.')
+		return get_char(n->_left_dot,pos+1,code);
+
+	return get_char(n->_right_line,pos+1,code);;
 }
 
 string morse_tree::get_code(Node *n, const char letter, bool *found)
 {
 	if(n == nullptr)
 		return "";
-	if(n->_data._letter == letter)
+	if(n->_data._letter_s == letter || n->_data._letter_b == letter)
 	{
 		*found = true;
 		return n->_data._code;
@@ -99,7 +109,7 @@ string morse_tree::decode(string input)
 		iss >> code;
 		oss << get_char(&_root,0,code);
 	}
-	return input;
+	return oss.str();
 }
 
 string morse_tree::encode(string input)
