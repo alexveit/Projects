@@ -11,7 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\..\..\..\Dev-Cpp\Projects\sudoku\sudoku.cpp" />
+    <ClCompile Include="sudoku.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{66CD50C3-C22E-4332-AD14-550891112BD0}</ProjectGuid>
